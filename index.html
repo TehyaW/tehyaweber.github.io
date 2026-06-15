@@ -69,7 +69,7 @@
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 1000;
       padding: 0 48px;
       height: 64px;
       display: flex;
@@ -832,20 +832,20 @@
 
     /* ── MOBILE NAV FIX ── */
     .mobile-menu {
-      display: none; /* <--- THIS MUST BE HERE */
+      display: none; 
       position: fixed;
       inset: 0;
-      z-index: 9999;
-      background: rgba(8,10,13,0.97);
+      z-index: -1; /* Hides it behind everything when closed */
+      background: rgba(8,10,13,0.98);
       flex-direction: column;
       justify-content: center;
       align-items: center;
       gap: 32px;
-      backdrop-filter: blur(8px);
     }
 
     .mobile-menu.open { 
-      display: flex !important; /* Force visible when JS adds the 'open' class */
+      display: flex !important; 
+      z-index: 9999; /* Only brings it to the front when open */
     }
 
     .mobile-menu a {
@@ -1366,13 +1366,14 @@
 
       // 2. Refactored Menu Logic (Toggle State)
       const toggleMenu = () => {
-        const isOpen = mobileMenu.classList.contains('open');
-        if (isOpen) {
-          mobileMenu.classList.remove('open');
-          hamburgerBtn.setAttribute('aria-expanded', 'false');
+        mobileMenu.classList.toggle('open');
+        // This line ensures the z-index resets when closed
+        if (!mobileMenu.classList.contains('open')) {
+            mobileMenu.style.zIndex = "-1";
+            // Add this inside your toggleMenu function
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : 'auto';
         } else {
-          mobileMenu.classList.add('open');
-          hamburgerBtn.setAttribute('aria-expanded', 'true');
+            mobileMenu.style.zIndex = "9999";
         }
       };
 
