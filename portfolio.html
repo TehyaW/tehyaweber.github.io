@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tehya Weber — Cybersecurity & Web Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --black:    #080A0D;
+      --void:     #0C0E12;
+      --panel:    #111318;
+      --border:   #1E2230;
+      --border-hi:#2A3045;
+      --gold:     #B8952A;
+      --gold-dim: #7A6018;
+      --gold-glow:rgba(184,149,42,0.12);
+      --silver:   #8A96A8;
+      --white:    #E8EAF0;
+      --white-dim:#9AA0B0;
+      --red:      #C0392B;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --font-body:    'Inter', sans-serif;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    ::selection { background: var(--gold-dim); color: var(--white); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--void); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8,10,13,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .nav-logo span { color: var(--white-dim); }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover {
+      background: var(--gold-glow);
+      border-color: var(--gold);
+    }
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--white-dim);
+      transition: all 0.2s;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(30,34,48,0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,34,48,0.4) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(184,149,42,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+    }
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 8vw, 108px);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-title {
+      font-family: var(--font-mono);
+      font-size: clamp(12px, 1.5vw, 15px);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-bottom: 40px;
+      margin-top: 16px;
+    }
+    .hero-bio {
+      max-width: 560px;
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--white-dim);
+      margin-bottom: 52px;
+    }
+    .hero-bio strong {
+      color: var(--white);
+      font-weight: 500;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #D4AB35; transform: translateY(-1px); }
+    .btn-ghost {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--white-dim);
+      border: 1px solid var(--border-hi);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--gold-dim); color: var(--gold); }
+    .hero-status {
+      position: absolute;
+      bottom: 48px;
+      right: 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2ECC71;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 48px;
+      left: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--silver);
+      writing-mode: vertical-lr;
+    }
+    .hero-scroll::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--silver), transparent);
+    }
+
+    /* ── SECTION BASE ── */
+    section { padding: 100px 48px; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+    .section-sub {
+      font-size: 15px;
+      color: var(--white-dim);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 64px;
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, var(--border-hi), transparent);
+      margin: 0 48px;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 48px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      padding: 0 32px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+    .stat-item:first-child { padding-left: 0; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--silver);
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--void); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .about-text p {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--white-dim);
+      margin-bottom: 20px;
+    }
+    .about-text p strong { color: var(--white); font-weight: 500; }
+    .about-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .cert-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color 0.2s;
+    }
+    .cert-card:hover { border-color: var(--gold-dim); }
+    .cert-icon {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--gold-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--gold);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .cert-info { flex: 1; }
+    .cert-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--white);
+      letter-spacing: 0.05em;
+      margin-bottom: 3px;
+    }
+    .cert-status {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .cert-status.in-progress { color: var(--gold); }
+    .cert-status.completed { color: #2ECC71; }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--black); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .skill-group {
+      background: var(--panel);
+      padding: 36px 32px;
+      transition: background 0.2s;
+    }
+    .skill-group:hover { background: var(--void); }
+    .skill-group-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .skill-list li {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--white-dim);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.2s;
+    }
+    .skill-list li:hover { color: var(--white); }
+    .skill-list li::before {
+      content: '›';
+      color: var(--gold);
+      font-size: 14px;
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--void); }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-left: 1px solid var(--border);
+      margin-left: 16px;
+    }
+    .timeline-item {
+      padding: 0 0 48px 40px;
+      position: relative;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      left: -5px;
+      top: 6px;
+      width: 9px;
+      height: 9px;
+      border: 1px solid var(--gold);
+      background: var(--black);
+      transform: rotate(45deg);
+    }
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .timeline-role {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .timeline-org {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--silver);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .timeline-desc {
+      font-size: 14px;
+      color: var(--white-dim);
+      line-height: 1.75;
+      max-width: 600px;
+    }
+    .timeline-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border-hi);
+      color: var(--silver);
+    }
+
+    /* ── PROJECTS ── */
+    #projects { background: var(--black); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .project-card {
+      background: var(--panel);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      cursor: pointer;
+      transition: background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .project-card:hover { background: var(--void); }
+    .project-card:hover::after { transform: scaleX(1); }
+    .project-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--gold-dim);
+      letter-spacing: 0.1em;
+    }
+    .project-name {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--white);
+      line-height: 1.2;
+    }
+    .project-desc {
+      font-size: 13px;
+      color: var(--white-dim);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .project-type {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .project-arrow {
+      font-size: 16px;
+      color: var(--silver);
+      transition: transform 0.2s, color 0.2s;
+    }
+    .project-card:hover .project-arrow { transform: translateX(4px); color: var(--gold); }
+
+    /* ── BLOG ── */
+    #blog { background: var(--void); }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .blog-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 32px;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+    .blog-card:hover { border-color: var(--gold-dim); }
+    .blog-card.featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .blog-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .blog-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--white);
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+    .blog-card.featured .blog-title { font-size: 32px; }
+    .blog-excerpt {
+      font-size: 14px;
+      color: var(--white-dim);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--silver);
+    }
+    .blog-meta span { color: var(--border-hi); }
+    .blog-placeholder-img {
+      background: var(--black);
+      border: 1px solid var(--border);
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--border-hi);
+      text-transform: uppercase;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--black); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--silver);
+    }
+    .form-input, .form-textarea {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--silver); }
+    .form-input:focus, .form-textarea:focus { border-color: var(--gold-dim); }
+    .form-textarea { height: 120px; resize: vertical; }
+    .contact-info { display: flex; flex-direction: column; gap: 32px; }
+    .contact-item { display: flex; flex-direction: column; gap: 6px; }
+    .contact-item-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .contact-item-value {
+      font-size: 15px;
+      color: var(--white-dim);
+      transition: color 0.2s;
+    }
+    .contact-item-value:hover { color: var(--white); }
+    .contact-availability {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-top: 8px;
+    }
+    .avail-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .avail-text {
+      font-size: 13px;
+      color: var(--white-dim);
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--void);
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-left {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--silver);
+    }
+    .footer-left strong { color: var(--gold); font-weight: 400; }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--silver);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ── TERMINAL ACCENT ── */
+    .terminal-line {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .terminal-line .prompt { color: var(--silver); }
+    .terminal-line .cmd { color: var(--white); }
+
+    /* ── MOBILE NAV ── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,10,13,0.97);
+      z-index: 99;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      backdrop-filter: blur(8px);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--white-dim);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: none;
+      border: none;
+      color: var(--silver);
+      font-size: 28px;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @media (prefers-reduced-motion: no-preference) {
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      section { padding: 72px 24px; }
+      .divider { margin: 0 24px; }
+      #hero { padding: 100px 24px 72px; }
+      .hero-scroll, .hero-status { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .blog-card.featured { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 32px 24px; }
+      .stat-item { padding: 16px; border-right: none; border-bottom: 1px solid var(--border); }
+      .stat-item:nth-child(2n) { border-bottom: 1px solid var(--border); }
+      .stat-item:last-child, .stat-item:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+      footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; gap: 20px; }
+    }
+    @media (max-width: 600px) {
+      .hero-name { font-size: 44px; }
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-logo">TW<span>/</span>sec</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#blog">Writing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Hire Me</a>
+    <button class="nav-hamburger" aria-label="Open menu" onclick="document.getElementById('mobileMenu').classList.add('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <button class="mobile-close" aria-label="Close menu" onclick="document.getElementById('mobileMenu').classList.remove('open')">✕</button>
+    <a href="#about" onclick="document.getElementById('mobileMenu').classList.remove('open')">About</a>
+    <a href="#skills" onclick="document.getElementById('mobileMenu').classList.remove('open')">Skills</a>
+    <a href="#experience" onclick="document.getElementById('mobileMenu').classList.remove('open')">Experience</a>
+    <a href="#projects" onclick="document.getElementById('mobileMenu').classList.remove('open')">Projects</a>
+    <a href="#blog" onclick="document.getElementById('mobileMenu').classList.remove('open')">Writing</a>
+    <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open')">Contact</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero" aria-label="Introduction">
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-eyebrow" aria-hidden="true">Cybersecurity &amp; Web Architecture</div>
+    <h1 class="hero-name">Tehya<br/><em>Weber</em></h1>
+    <p class="hero-title">Compliance · Technical Architecture · Security</p>
+    <p class="hero-bio">
+      Dual-enrollment student at <strong>Seminole State College</strong> focused on identifying digital risks, executing technical asset deployments, and managing web architecture. Pursuing <strong>CompTIA Security+</strong> and <strong>CEH</strong> — building a career in cybersecurity from the ground up, one exploit at a time.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn-primary">View My Work</a>
+      <a href="#contact" class="btn-ghost">Get In Touch</a>
+    </div>
+    <div class="hero-scroll" aria-hidden="true">Scroll</div>
+    <div class="hero-status" aria-label="Currently available for opportunities">
+      <span class="status-dot"></span>
+      Available for opportunities
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar" role="region" aria-label="Key stats">
+    <div class="stat-item">
+      <div class="stat-num">2+</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Platforms Mastered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Certs in Progress</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Things Left to Break</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about" aria-labelledby="about-heading">
+    <div class="section-label">01 — About</div>
+    <div class="about-grid">
+      <div class="about-text fade-in">
+        <h2 class="section-title" id="about-heading">The person<br/><em>behind the recon</em></h2>
+        <p>I balance a rigorous dual-enrollment curriculum at <strong>Seminole State College</strong> with practical roles in compliance, technical architecture, and organizational strategy.</p>
+        <p>My technical focus centers on <strong>identifying digital risks</strong>, executing technical asset deployments, and managing web architecture using WordPress, Elementor, and Shopify. I've audited infrastructure during technical site surveys, managed international development initiatives under executive leadership, and spent a lot of time learning how things break.</p>
+        <p>I focus on <strong>technical precision and measurable operational outcomes</strong> — because in security, vague is dangerous.</p>
+        <div style="margin-top: 32px;">
+          <div class="terminal-line"><span class="prompt">~/tehya $</span> <span class="cmd">cat status.txt</span></div>
+          <div class="terminal-line" style="color: var(--white-dim); font-size: 12px;">→ Open to internships, research roles &amp; CTF teams</div>
+          <div class="terminal-line" style="color: var(--white-dim); font-size: 12px;">→ Based in Florida / Remote-friendly</div>
+        </div>
+      </div>
+      <div class="about-aside fade-in">
+        <h3 style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); margin-bottom: 20px;">Certifications &amp; Training</h3>
+        <div class="cert-card">
+          <div class="cert-icon">S+</div>
+          <div class="cert-info">
+            <div class="cert-name">CompTIA Security+</div>
+            <div class="cert-status in-progress">In Progress</div>
+          </div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">CEH</div>
+          <div class="cert-info">
+            <div class="cert-name">Certified Ethical Hacker</div>
+            <div class="cert-status in-progress">In Progress</div>
+          </div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">SSC</div>
+          <div class="cert-info">
+            <div class="cert-name">Seminole State College</div>
+            <div class="cert-status completed">Dual Enrollment — Active</div>
+          </div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">WP</div>
+          <div class="cert-info">
+            <div class="cert-name">WordPress / Elementor / Shopify</div>
+            <div class="cert-status completed">Proficient</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- SKILLS -->
+  <section id="skills" aria-labelledby="skills-heading">
+    <div class="section-label">02 — Skills</div>
+    <h2 class="section-title" id="skills-heading" style="margin-bottom: 48px;">Technical<br/><em>arsenal</em></h2>
+    <div class="skills-grid fade-in">
+      <div class="skill-group">
+        <div class="skill-group-title">Security &amp; Compliance</div>
+        <ul class="skill-list">
+          <li>Risk Assessment &amp; Identification</li>
+          <li>Infrastructure Auditing</li>
+          <li>Compliance Frameworks</li>
+          <li>Technical Site Surveys</li>
+          <li>Security+ Framework</li>
+          <li>CEH Methodology</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Web Architecture</div>
+        <ul class="skill-list">
+          <li>WordPress &amp; Elementor</li>
+          <li>Shopify Development</li>
+          <li>Technical Asset Deployment</li>
+          <li>Web Architecture Design</li>
+          <li>HTML / CSS</li>
+          <li>CMS Management</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Strategy &amp; Operations</div>
+        <ul class="skill-list">
+          <li>Organizational Strategy</li>
+          <li>Executive-level Coordination</li>
+          <li>International Dev Initiatives</li>
+          <li>Technical Documentation</li>
+          <li>Operational Precision</li>
+          <li>Project Management</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" aria-labelledby="exp-heading">
+    <div class="section-label">03 — Experience</div>
+    <h2 class="section-title" id="exp-heading" style="margin-bottom: 64px;">Where I've<br/><em>operated</em></h2>
+    <div class="timeline fade-in">
+      <div class="timeline-item">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">2024 — Present</div>
+        <div class="timeline-role">Compliance &amp; Technical Architecture</div>
+        <div class="timeline-org">[ Add Organization Name ]</div>
+        <p class="timeline-desc">Executed technical asset deployments, managed web architecture, and audited infrastructure during technical site surveys. Maintained compliance standards and contributed to operational strategy under executive leadership.</p>
+        <div class="timeline-tags">
+          <span class="tag">Compliance</span>
+          <span class="tag">Infrastructure</span>
+          <span class="tag">Web Architecture</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">2023 — 2024</div>
+        <div class="timeline-role">International Development Initiatives</div>
+        <div class="timeline-org">[ Add Organization Name ]</div>
+        <p class="timeline-desc">Managed international development initiatives under executive leadership. Coordinated cross-functional teams and delivered measurable operational outcomes across multiple projects.</p>
+        <div class="timeline-tags">
+          <span class="tag">Strategy</span>
+          <span class="tag">Operations</span>
+          <span class="tag">Leadership</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">2023 — Present</div>
+        <div class="timeline-role">Student — Cybersecurity Track</div>
+        <div class="timeline-org">Seminole State College · Dual Enrollment</div>
+        <p class="timeline-desc">Pursuing advanced coursework in cybersecurity alongside practical professional roles. Studying CompTIA Security+ and CEH frameworks with focus on ethical hacking methodology and security compliance.</p>
+        <div class="timeline-tags">
+          <span class="tag">Security+</span>
+          <span class="tag">CEH</span>
+          <span class="tag">Dual Enrollment</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects" aria-labelledby="projects-heading">
+    <div class="section-label">04 — Projects</div>
+    <h2 class="section-title" id="projects-heading">Things I've<br/><em>built &amp; broken</em></h2>
+    <p class="section-sub">Placeholder projects — replace these with your real work as you build it out. Every one counts.</p>
+    <div class="projects-grid fade-in">
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Security Audit Framework">
+        <div class="project-num">01</div>
+        <h3 class="project-name">Security Audit Framework</h3>
+        <p class="project-desc">A structured approach to infrastructure auditing developed during technical site surveys. Documents findings and maps risks to remediation paths.</p>
+        <div class="project-meta">
+          <span class="project-type">Security</span>
+          <span class="project-arrow" aria-hidden="true">→</span>
+        </div>
+      </article>
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: E-Commerce Architecture">
+        <div class="project-num">02</div>
+        <h3 class="project-name">E-Commerce Architecture</h3>
+        <p class="project-desc">Full Shopify deployment with custom Elementor landing pages. Managed technical asset rollout from architecture to go-live.</p>
+        <div class="project-meta">
+          <span class="project-type">Web Architecture</span>
+          <span class="project-arrow" aria-hidden="true">→</span>
+        </div>
+      </article>
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Coming Soon">
+        <div class="project-num">03</div>
+        <h3 class="project-name">CTF Write-up</h3>
+        <p class="project-desc">[ Coming soon — document your first Capture the Flag competition here. Recruiters love seeing this. ]</p>
+        <div class="project-meta">
+          <span class="project-type">Ethical Hacking</span>
+          <span class="project-arrow" aria-hidden="true">→</span>
+        </div>
+      </article>
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Compliance Playbook">
+        <div class="project-num">04</div>
+        <h3 class="project-name">Compliance Playbook</h3>
+        <p class="project-desc">[ Placeholder — add your compliance documentation, framework implementation, or policy writing project here. ]</p>
+        <div class="project-meta">
+          <span class="project-type">Compliance</span>
+          <span class="project-arrow" aria-hidden="true">→</span>
+        </div>
+      </article>
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: WordPress Security Hardening">
+        <div class="project-num">05</div>
+        <h3 class="project-name">WordPress Security Hardening</h3>
+        <p class="project-desc">[ Placeholder — document a real WP security implementation: plugin audit, permission review, or hardening checklist. ]</p>
+        <div class="project-meta">
+          <span class="project-type">Web Security</span>
+          <span class="project-arrow" aria-hidden="true">→</span>
+        </div>
+      </article>
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Add Your Own">
+        <div class="project-num">06</div>
+        <h3 class="project-name">[ Your Next Project ]</h3>
+        <p class="project-desc">This spot is reserved for whatever you build next. Keep shipping — this portfolio grows with you.</p>
+        <div class="project-meta">
+          <span class="project-type">TBD</span>
+          <span class="project-arrow" aria-hidden="true">→</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- BLOG -->
+  <section id="blog" aria-labelledby="blog-heading">
+    <div class="section-label">05 — Writing</div>
+    <h2 class="section-title" id="blog-heading">Thoughts on<br/><em>security &amp; systems</em></h2>
+    <p class="section-sub">Writing forces clarity. These posts are where I break down what I'm learning, what I'm researching, and what I think about the industry.</p>
+    <div class="blog-grid fade-in">
+      <article class="blog-card featured" tabindex="0">
+        <div>
+          <div class="blog-tag">Featured Post</div>
+          <h3 class="blog-title">Why Compliance Without Security is Just Theater</h3>
+          <p class="blog-excerpt">The checklist is done. The auditor signed off. But is the organization actually secure? A breakdown of the gap between meeting compliance requirements and building real defense-in-depth.</p>
+          <div class="blog-meta">
+            <span>[ Add Date ]</span>
+            <span>·</span>
+            <span>5 min read</span>
+            <span>·</span>
+            <span>Compliance</span>
+          </div>
+        </div>
+        <div class="blog-placeholder-img" aria-label="Post thumbnail placeholder">[ Add Image ]</div>
+      </article>
+      <article class="blog-card" tabindex="0">
+        <div class="blog-tag">Web Security</div>
+        <h3 class="blog-title">WordPress Hardening Checklist: What Most Tutorials Miss</h3>
+        <p class="blog-excerpt">Everyone covers basic plugin hygiene. Nobody talks about the server-level decisions that actually matter.</p>
+        <div class="blog-meta">
+          <span>[ Add Date ]</span>
+          <span>·</span>
+          <span>4 min read</span>
+        </div>
+      </article>
+      <article class="blog-card" tabindex="0">
+        <div class="blog-tag">Career</div>
+        <h3 class="blog-title">What Dual Enrollment Taught Me About Working in the Real World</h3>
+        <p class="blog-excerpt">Balancing college coursework with real professional roles isn't easy. Here's what actually transfers.</p>
+        <div class="blog-meta">
+          <span>[ Add Date ]</span>
+          <span>·</span>
+          <span>3 min read</span>
+        </div>
+      </article>
+    </div>
+    <div style="margin-top: 40px; text-align: center;">
+      <a href="#" class="btn-ghost">View All Posts</a>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <!-- CONTACT -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="section-label">06 — Contact</div>
+    <div class="contact-grid">
+      <div>
+        <h2 class="section-title" id="contact-heading">Let's<br/><em>talk</em></h2>
+        <p class="section-sub" style="margin-bottom: 0;">Open to internships, research collaborations, CTF teams, and conversations about cybersecurity. If you're a recruiter — hi, I'm exactly what you're looking for.</p>
+      </div>
+      <div>
+        <form class="contact-form" onsubmit="handleSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="contact-name">Your Name</label>
+            <input class="form-input" type="text" id="contact-name" name="name" placeholder="Jane Smith" required autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-email">Email</label>
+            <input class="form-input" type="email" id="contact-email" name="email" placeholder="jane@company.com" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-subject">Subject</label>
+            <input class="form-input" type="text" id="contact-subject" name="subject" placeholder="Internship opportunity / Collaboration" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-msg">Message</label>
+            <textarea class="form-textarea" id="contact-msg" name="message" placeholder="Tell me what you're working on..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%;">Send Message</button>
+          <p id="form-feedback" style="font-family: var(--font-mono); font-size: 11px; color: var(--gold); display: none; text-align: center; letter-spacing: 0.1em;">→ Message sent. I'll be in touch.</p>
+        </form>
+      </div>
+    </div>
+    <div style="margin-top: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px;">
+      <div class="contact-item">
+        <div class="contact-item-label">LinkedIn</div>
+        <a href="https://linkedin.com/in/tehya-weber" class="contact-item-value" target="_blank" rel="noopener">linkedin.com/in/tehya-weber</a>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-label">Email</div>
+        <a href="mailto:tehya@email.com" class="contact-item-value">[ Add Your Email ]</a>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-label">GitHub</div>
+        <a href="https://github.com/" class="contact-item-value" target="_blank" rel="noopener">[ Add GitHub Handle ]</a>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-label">Location</div>
+        <div class="contact-item-value">Florida, USA · Remote OK</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      © 2025 <strong>Tehya Weber</strong> · Built with intention, not a template.
+    </div>
+    <ul class="footer-links">
+      <li><a href="#hero">Top</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#blog">Writing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Active nav link highlighting
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 80) current = s.id;
+      });
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + current ? 'var(--gold)' : '';
+      });
+    });
+
+    // Form submit
+    function handleSubmit(e) {
+      e.preventDefault();
+      const fb = document.getElementById('form-feedback');
+      fb.style.display = 'block';
+      e.target.reset();
+      setTimeout(() => { fb.style.display = 'none'; }, 5000);
+    }
+
+    // Keyboard nav for mobile menu
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') document.getElementById('mobileMenu').classList.remove('open');
+    });
+  </script>
+</body>
+</html>
