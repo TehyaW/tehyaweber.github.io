@@ -1330,31 +1330,27 @@
       const navLinks = document.querySelectorAll('.nav-links a');
       const contactForm = document.querySelector('.contact-form');
 
-      // 2. Mobile Menu Infrastructure
-      const openMenu = () => {
-        if (mobileMenu && hamburgerBtn) {
+      // 2. Refactored Menu Logic (Toggle State)
+      const toggleMenu = () => {
+        const isOpen = mobileMenu.classList.contains('open');
+        if (isOpen) {
+          mobileMenu.classList.remove('open');
+          hamburgerBtn.setAttribute('aria-expanded', 'false');
+        } else {
           mobileMenu.classList.add('open');
           hamburgerBtn.setAttribute('aria-expanded', 'true');
         }
       };
 
-      const closeMenu = () => {
-        if (mobileMenu && hamburgerBtn) {
-          mobileMenu.classList.remove('open');
-          hamburgerBtn.setAttribute('aria-expanded', 'false');
-        }
-      };
-
-      if (hamburgerBtn && mobileCloseBtn) {
-        hamburgerBtn.addEventListener('click', openMenu);
-        mobileCloseBtn.addEventListener('click', closeMenu);
-        mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
-      }
+      // Attach same toggle function to all triggers
+      if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleMenu);
+      if (mobileCloseBtn) mobileCloseBtn.addEventListener('click', toggleMenu);
+      mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
 
       // 3. Accessibility Key Listener
       document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('open')) {
-          closeMenu();
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          toggleMenu();
         }
       });
 
@@ -1367,18 +1363,13 @@
 
       const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && entry.target.classList.contains('fade-in')) {
-            entry.target.classList.add('visible');
-          }
-          
           if (entry.isIntersecting) {
+            if (entry.target.classList.contains('fade-in')) {
+              entry.target.classList.add('visible');
+            }
             const id = entry.target.getAttribute('id');
             navLinks.forEach(link => {
-              if (link.getAttribute('href') === `#${id}`) {
-                link.style.color = 'var(--gold)';
-              } else {
-                link.style.color = '';
-              }
+              link.style.color = (link.getAttribute('href') === `#${id}`) ? 'var(--gold)' : '';
             });
           }
         });
