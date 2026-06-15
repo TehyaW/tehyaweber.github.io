@@ -135,10 +135,25 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 120px 48px 80px;
+      justify-content: flex-start; /* Changed from center */
+      padding: 160px 48px 60px;    /* Increased top padding to push the title down naturally */
       position: relative;
       overflow: hidden;
+    }
+    .hero-status-sub {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--silver);
+      margin-top: 16px; /* Pulls it up close to the bio text */
+      margin-bottom: 0;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-status-sub .status-arrow {
+      color: var(--gold); /* Highlights the arrow accent cleanly */
     }
     .hero-grid-bg {
       position: absolute;
@@ -218,6 +233,8 @@
       align-items: center;
     }
     .btn-primary {
+      display: inline-block; /* Forces the link to behave like a button box */
+      text-decoration: none;  /* Strips the ugly default link underline */
       font-family: var(--font-mono);
       font-size: 11px;
       letter-spacing: 0.14em;
@@ -225,25 +242,21 @@
       padding: 14px 32px;
       background: var(--gold);
       color: var(--black);
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-      display: inline-block;
+      transition: background 0.2s ease, transform 0.2s ease;
     }
     .btn-primary:hover { background: #D4AB35; transform: translateY(-1px); }
     .btn-ghost {
+      display: inline-block; /* Forces the link to behave like a button box */
+      text-decoration: none;  /* Strips the ugly default link underline */
       font-family: var(--font-mono);
       font-size: 11px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       padding: 14px 32px;
       background: transparent;
-      color: var(--white-dim);
       border: 1px solid var(--border-hi);
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-block;
+      color: var(--white-dim);
+      transition: background 0.2s ease, transform 0.2s ease;
     }
     .btn-ghost:hover { border-color: var(--gold-dim); color: var(--gold); }
     .hero-status {
@@ -886,20 +899,20 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a href="#contact" class="nav-cta">Hire Me</a>
-    <button class="nav-hamburger" aria-label="Open menu" onclick="document.getElementById('mobileMenu').classList.add('open')">
+    <button class="nav-hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span><span></span><span></span>
     </button>
   </nav>
 
   <!-- MOBILE MENU -->
   <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
-    <button class="mobile-close" aria-label="Close menu" onclick="document.getElementById('mobileMenu').classList.remove('open')">✕</button>
-    <a href="#about" onclick="document.getElementById('mobileMenu').classList.remove('open')">About</a>
-    <a href="#skills" onclick="document.getElementById('mobileMenu').classList.remove('open')">Skills</a>
-    <a href="#experience" onclick="document.getElementById('mobileMenu').classList.remove('open')">Experience</a>
-    <a href="#projects" onclick="document.getElementById('mobileMenu').classList.remove('open')">Projects</a>
-    <a href="#blog" onclick="document.getElementById('mobileMenu').classList.remove('open')">Writing</a>
-    <a href="#contact" onclick="document.getElementById('mobileMenu').classList.remove('open')">Contact</a>
+    <button class="mobile-close" id="mobileCloseBtn" aria-label="Close menu">✕</button>
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#skills" class="mobile-link">Skills</a>
+    <a href="#experience" class="mobile-link">Experience</a>
+    <a href="#projects" class="mobile-link">Projects</a>
+    <a href="#blog" class="mobile-link">Writing</a>
+    <a href="#contact" class="mobile-link">Contact</a>
   </div>
 
   <!-- HERO -->
@@ -910,16 +923,15 @@
     <h1 class="hero-name">Tehya<br/><em>Weber</em></h1>
     <p class="hero-title">Compliance · Technical Architecture · Security</p>
     <p class="hero-bio">
-      Dual-enrollment student at <strong>Seminole State College</strong> focused on identifying digital risks, executing technical asset deployments, and managing web architecture. Pursuing <strong>CompTIA Security+</strong> and <strong>CEH</strong> — building a career in cybersecurity from the ground up, one exploit at a time.
+      Technical asset managing concurrent roles across <strong>cybersecurity compliance, systems infrastructure, and digital web architecture</strong>. Balancing advanced frameworks like CompTIA Security+ and CEH with enterprise asset deployment, compliance auditing, and international development strategy.
     </p>
-    <div class="hero-actions">
-      <a href="#projects" class="btn-primary">View My Work</a>
-      <a href="#contact" class="btn-ghost">Get In Touch</a>
-    </div>
+    <p class="hero-status-sub" style="margin-top: -8px !important; padding-top: 0 !important;">
+      <span class="status-arrow">→</span> Specifying in Technical Risk Audit Mapping &amp; Scalable Deployments.
+    </p>
     <div class="hero-scroll" aria-hidden="true">Scroll</div>
     <div class="hero-status" aria-label="Currently available for opportunities">
       <span class="status-dot"></span>
-      Available for opportunities
+      Active on Production Networks
     </div>
   </section>
 
@@ -950,18 +962,19 @@
       <div class="about-text fade-in">
         <h2 class="section-title" id="about-heading">The person<br/><em>behind the recon</em></h2>
         <p>I balance a rigorous dual-enrollment curriculum at <strong>Seminole State College</strong> with practical roles in compliance, technical architecture, and organizational strategy.</p>
-        <p>My technical focus centers on <strong>identifying digital risks</strong>, executing technical asset deployments, and managing web architecture using WordPress, Elementor, and Shopify. I've audited infrastructure during technical site surveys, managed international development initiatives under executive leadership, and spent a lot of time learning how things break.</p>
+        <p>My technical focus centers on <strong>identifying digital risks</strong>, executing technical asset deployments, and managing web architecture using WordPress, Elementor, Wix, and Shopify. I've audited infrastructure during technical site surveys, managed international development initiatives under executive leadership, and spent a lot of time learning how things break.</p>
         <p>I focus on <strong>technical precision and measurable operational outcomes</strong> — because in security, vague is dangerous.</p>
         <div style="margin-top: 32px;">
           <div class="terminal-line"><span class="prompt">~/tehya $</span> <span class="cmd">cat status.txt</span></div>
-          <div class="terminal-line" style="color: var(--white-dim); font-size: 12px;">→ Open to internships, research roles &amp; CTF teams</div>
-          <div class="terminal-line" style="color: var(--white-dim); font-size: 12px;">→ Based in Florida / Remote-friendly</div>
+          <div class="terminal-line" style="color: var(--white-dim); font-size: 12px;">→ Specializing in Cybersecurity Compliance &amp; Web Architecture</div>
+          <div class="terminal-line" style="color: var(--white-dim); font-size: 12px;">→ Actively managing technical asset deployments &amp; infrastructure auditing</div>
+          <div class="terminal-line" style="color: var(--white-dim); font-size: 12px;">→ Based in Central Florida / Available for high-impact technical roles</div>
         </div>
       </div>
       <div class="about-aside fade-in">
         <h3 style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); margin-bottom: 20px;">Certifications &amp; Training</h3>
         <div class="cert-card">
-          <div class="cert-icon">S+</div>
+          <div class="cert-icon">Sec+</div>
           <div class="cert-info">
             <div class="cert-name">CompTIA Security+</div>
             <div class="cert-status in-progress">In Progress</div>
@@ -984,7 +997,7 @@
         <div class="cert-card">
           <div class="cert-icon">WP</div>
           <div class="cert-info">
-            <div class="cert-name">WordPress / Elementor / Shopify</div>
+            <div class="cert-name">WordPress / Elementor / Wix / Shopify </div>
             <div class="cert-status completed">Proficient</div>
           </div>
         </div>
@@ -1014,7 +1027,7 @@
         <div class="skill-group-title">Web Architecture</div>
         <ul class="skill-list">
           <li>WordPress &amp; Elementor</li>
-          <li>Shopify Development</li>
+          <li>Wix &amp; Shopify Development</li>
           <li>Technical Asset Deployment</li>
           <li>Web Architecture Design</li>
           <li>HTML / CSS</li>
@@ -1044,38 +1057,74 @@
     <div class="timeline fade-in">
       <div class="timeline-item">
         <div class="timeline-dot" aria-hidden="true"></div>
-        <div class="timeline-date">2024 — Present</div>
-        <div class="timeline-role">Compliance &amp; Technical Architecture</div>
-        <div class="timeline-org">[ Add Organization Name ]</div>
-        <p class="timeline-desc">Executed technical asset deployments, managed web architecture, and audited infrastructure during technical site surveys. Maintained compliance standards and contributed to operational strategy under executive leadership.</p>
+        <div class="timeline-date">June 2026 — Present</div>
+        <div class="timeline-role">Web Design &amp; Development (Internship)</div>
+        <div class="timeline-org">Domain Stride Web Developers</div>
+        <p class="timeline-desc">Architecting premium web experiences and scalable digital infrastructures. Deploying customized layouts, optimizing content delivery, and managing high-performance content management systems for modern web platforms.</p>
         <div class="timeline-tags">
-          <span class="tag">Compliance</span>
-          <span class="tag">Infrastructure</span>
           <span class="tag">Web Architecture</span>
+          <span class="tag">CMS Engineering</span>
+          <span class="tag">Optimization</span>
         </div>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot" aria-hidden="true"></div>
-        <div class="timeline-date">2023 — 2024</div>
-        <div class="timeline-role">International Development Initiatives</div>
-        <div class="timeline-org">[ Add Organization Name ]</div>
-        <p class="timeline-desc">Managed international development initiatives under executive leadership. Coordinated cross-functional teams and delivered measurable operational outcomes across multiple projects.</p>
+        <div class="timeline-date">May 2026 — Present</div>
+        <div class="timeline-role">Cybersecurity Compliance (Internship)</div>
+        <div class="timeline-org">Edge Systems</div>
+        <p class="timeline-desc">Evaluating digital risk vectors and conducting rigorous infrastructure auditing. Navigating complex compliance frameworks, identifying vulnerabilities, and generating detailed technical documentation to safeguard production assets.</p>
+        <div class="timeline-tags">
+          <span class="tag">Risk Auditing</span>
+          <span class="tag">Compliance</span>
+          <span class="tag">Security Frameworks</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">June 2026 — Present</div>
+        <div class="timeline-role">Regional Director &amp; Board Member (Volunteer)</div>
+        <div class="timeline-org">World Wave Music Festival</div>
+        <p class="timeline-desc">Coordinating international development initiatives under executive leadership. Driving cross-functional organizational strategy and executing regional deployments to balance high-level technical positioning with measurable operational outcomes.</p>
         <div class="timeline-tags">
           <span class="tag">Strategy</span>
           <span class="tag">Operations</span>
-          <span class="tag">Leadership</span>
+          <span class="tag">Global Deployment</span>
         </div>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot" aria-hidden="true"></div>
-        <div class="timeline-date">2023 — Present</div>
-        <div class="timeline-role">Student — Cybersecurity Track</div>
+        <div class="timeline-date">July 2025 — Present</div>
+        <div class="timeline-role">Social Media Manager &amp; Digital Strategist (Volunteer)</div>
+        <div class="timeline-org">Neuro Kids Now</div>
+        <p class="timeline-desc">Recruited by the branch founder to engineer the digital footprint and media architecture for the Orlando/Seminole County deployment. Driving content lifecycles, asset production, and multi-channel audience coordination to build local online identity from inception.</p>
+        <div class="timeline-tags">
+          <span class="tag">Digital Architecture</span>
+          <span class="tag">Brand Strategy</span>
+          <span class="tag">Asset Lifecycle</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">February 2026 — Present</div>
+        <div class="timeline-role">Crew Member (Part-Time)</div>
+        <div class="timeline-org">Chipotle</div>
+        <p class="timeline-desc">Executing high-volume operations under strict, fast-paced timelines. Ensuring strict compliance with operational protocols, coordinating multi-tier workflow execution, and maintaining situational awareness in high-pressure environments.</p>
+        <div class="timeline-tags">
+          <span class="tag">Workflow Execution</span>
+          <span class="tag">Operations</span>
+          <span class="tag">Protocol Compliance</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <div class="timeline-date">2025 — Present</div>
+        <div class="timeline-role">Technical Asset — Cybersecurity Track (Education)</div>
         <div class="timeline-org">Seminole State College · Dual Enrollment</div>
-        <p class="timeline-desc">Pursuing advanced coursework in cybersecurity alongside practical professional roles. Studying CompTIA Security+ and CEH frameworks with focus on ethical hacking methodology and security compliance.</p>
+        <p class="timeline-desc">Pursuing specialized technical coursework in cybersecurity, networking infrastructure, and Java alongside concurrent professional operations. Actively auditing CompTIA Security+ and CEH frameworks.</p>
         <div class="timeline-tags">
           <span class="tag">Security+</span>
           <span class="tag">CEH</span>
-          <span class="tag">Dual Enrollment</span>
+          <span class="tag">Infrastructure</span>
         </div>
       </div>
     </div>
@@ -1087,59 +1136,59 @@
   <section id="projects" aria-labelledby="projects-heading">
     <div class="section-label">04 — Projects</div>
     <h2 class="section-title" id="projects-heading">Things I've<br/><em>built &amp; broken</em></h2>
-    <p class="section-sub">Placeholder projects — replace these with your real work as you build it out. Every one counts.</p>
+    <p class="section-sub">Production builds and deployment records. Active work and infrastructure milestones.</p>
     <div class="projects-grid fade-in">
-      <article class="project-card" tabindex="0" role="article" aria-label="Project: Security Audit Framework">
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Legacy Infrastructure Assessment">
         <div class="project-num">01</div>
-        <h3 class="project-name">Security Audit Framework</h3>
-        <p class="project-desc">A structured approach to infrastructure auditing developed during technical site surveys. Documents findings and maps risks to remediation paths.</p>
+        <h3 class="project-name">Legacy Infrastructure Assessment</h3>
+        <p class="project-desc">Conducted an onsite field survey in Kissimmee to audit legacy hardware architectures. Mapped structural physical networking layers, executed equipment labeling protocols, and documented topological risks for compliance mapping.</p>
         <div class="project-meta">
-          <span class="project-type">Security</span>
+          <span class="project-type">Systems Infrastructure</span>
           <span class="project-arrow" aria-hidden="true">→</span>
         </div>
       </article>
-      <article class="project-card" tabindex="0" role="article" aria-label="Project: E-Commerce Architecture">
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Enterprise E-Commerce Deployments">
         <div class="project-num">02</div>
-        <h3 class="project-name">E-Commerce Architecture</h3>
-        <p class="project-desc">Full Shopify deployment with custom Elementor landing pages. Managed technical asset rollout from architecture to go-live.</p>
+        <h3 class="project-name">Enterprise E-Commerce Deployments</h3>
+        <p class="project-desc">Engineered robust digital web builds using customized layouts across WordPress, Elementor, Wix, and Shopify. Directed complete technical asset rollouts from structural conceptualization to deployment hardening.</p>
         <div class="project-meta">
           <span class="project-type">Web Architecture</span>
           <span class="project-arrow" aria-hidden="true">→</span>
         </div>
       </article>
-      <article class="project-card" tabindex="0" role="article" aria-label="Project: Coming Soon">
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Network Environment Hardening">
         <div class="project-num">03</div>
-        <h3 class="project-name">CTF Write-up</h3>
-        <p class="project-desc">[ Coming soon — document your first Capture the Flag competition here. Recruiters love seeing this. ]</p>
+        <h3 class="project-name">Network Infrastructure Hardening</h3>
+        <p class="project-desc">Configured and tested local local area network environments using specialized testing environments. Simulated risk injection maps to audit vulnerabilities, protocol translation errors, and access management logic.</p>
         <div class="project-meta">
           <span class="project-type">Ethical Hacking</span>
           <span class="project-arrow" aria-hidden="true">→</span>
         </div>
       </article>
-      <article class="project-card" tabindex="0" role="article" aria-label="Project: Compliance Playbook">
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Compliance Risk Framework">
         <div class="project-num">04</div>
-        <h3 class="project-name">Compliance Playbook</h3>
-        <p class="project-desc">[ Placeholder — add your compliance documentation, framework implementation, or policy writing project here. ]</p>
+        <h3 class="project-name">Compliance Risk Framework</h3>
+        <p class="project-desc">Designed an internal risk evaluation playbook focused on operational auditing parameters. Maps procedural discrepancies down to measurable technical controls using elements from standard cybersecurity compliance frameworks.</p>
         <div class="project-meta">
           <span class="project-type">Compliance</span>
           <span class="project-arrow" aria-hidden="true">→</span>
         </div>
       </article>
-      <article class="project-card" tabindex="0" role="article" aria-label="Project: WordPress Security Hardening">
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Brand Architecture Deployment">
         <div class="project-num">05</div>
-        <h3 class="project-name">WordPress Security Hardening</h3>
-        <p class="project-desc">[ Placeholder — document a real WP security implementation: plugin audit, permission review, or hardening checklist. ]</p>
+        <h3 class="project-name">Brand Architecture Deployment</h3>
+        <p class="project-desc">Engineered and managed public digital assets for complex organizational networks. Built localized delivery funnels and audited multi-platform communication workflows for consistent performance standards.</p>
         <div class="project-meta">
           <span class="project-type">Web Security</span>
           <span class="project-arrow" aria-hidden="true">→</span>
         </div>
       </article>
-      <article class="project-card" tabindex="0" role="article" aria-label="Project: Add Your Own">
+      <article class="project-card" tabindex="0" role="article" aria-label="Project: Quantitative Security Diagnostics">
         <div class="project-num">06</div>
-        <h3 class="project-name">[ Your Next Project ]</h3>
-        <p class="project-desc">This spot is reserved for whatever you build next. Keep shipping — this portfolio grows with you.</p>
+        <h3 class="project-name">Quantitative Diagnostics</h3>
+        <p class="project-desc">Developing custom data distribution tracking models to capture system failure metrics. Utilizing advanced statistics methodologies to analyze operational error frequencies and isolate network bottlenecks.</p>
         <div class="project-meta">
-          <span class="project-type">TBD</span>
+          <span class="project-type">Data &amp; Security</span>
           <span class="project-arrow" aria-hidden="true">→</span>
         </div>
       </article>
@@ -1154,42 +1203,48 @@
     <h2 class="section-title" id="blog-heading">Thoughts on<br/><em>security &amp; systems</em></h2>
     <p class="section-sub">Writing forces clarity. These posts are where I break down what I'm learning, what I'm researching, and what I think about the industry.</p>
     <div class="blog-grid fade-in">
+      <!-- Featured Post -->
       <article class="blog-card featured" tabindex="0">
         <div>
           <div class="blog-tag">Featured Post</div>
           <h3 class="blog-title">Why Compliance Without Security is Just Theater</h3>
           <p class="blog-excerpt">The checklist is done. The auditor signed off. But is the organization actually secure? A breakdown of the gap between meeting compliance requirements and building real defense-in-depth.</p>
           <div class="blog-meta">
-            <span>[ Add Date ]</span>
+            <span>June 2026</span>
             <span>·</span>
             <span>5 min read</span>
             <span>·</span>
             <span>Compliance</span>
           </div>
         </div>
-        <div class="blog-placeholder-img" aria-label="Post thumbnail placeholder">[ Add Image ]</div>
+        <div class="blog-placeholder-img" aria-label="Post thumbnail placeholder"></div>
       </article>
+
+      <!-- Second Post -->
       <article class="blog-card" tabindex="0">
         <div class="blog-tag">Web Security</div>
         <h3 class="blog-title">WordPress Hardening Checklist: What Most Tutorials Miss</h3>
-        <p class="blog-excerpt">Everyone covers basic plugin hygiene. Nobody talks about the server-level decisions that actually matter.</p>
+        <p class="blog-excerpt">Everyone covers basic plugin hygiene. I break down the server-level configuration decisions—from file execution restrictions to WAF implementation—that actually secure the stack.</p>
         <div class="blog-meta">
-          <span>[ Add Date ]</span>
+          <span>May 2026</span>
           <span>·</span>
           <span>4 min read</span>
         </div>
       </article>
+
+      <!-- Third Post -->
       <article class="blog-card" tabindex="0">
         <div class="blog-tag">Career</div>
         <h3 class="blog-title">What Dual Enrollment Taught Me About Working in the Real World</h3>
-        <p class="blog-excerpt">Balancing college coursework with real professional roles isn't easy. Here's what actually transfers.</p>
+        <p class="blog-excerpt">Balancing heavy academic loads with professional internship roles taught me the art of technical triage and how to effectively manage high-stakes priorities under pressure.</p>
         <div class="blog-meta">
-          <span>[ Add Date ]</span>
+          <span>April 2026</span>
           <span>·</span>
           <span>3 min read</span>
         </div>
       </article>
     </div>
+    
     <div style="margin-top: 40px; text-align: center;">
       <a href="#" class="btn-ghost">View All Posts</a>
     </div>
@@ -1263,42 +1318,84 @@
 
   <!-- SCRIPTS -->
   <script>
-    // Fade-in on scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Core DOM Object Mappings
+      const mobileMenu = document.getElementById('mobileMenu');
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-links a');
+      const contactForm = document.querySelector('.contact-form');
+
+      // 2. Mobile Menu Infrastructure
+      const openMenu = () => {
+        if (mobileMenu && hamburgerBtn) {
+          mobileMenu.classList.add('open');
+          hamburgerBtn.setAttribute('aria-expanded', 'true');
+        }
+      };
+
+      const closeMenu = () => {
+        if (mobileMenu && hamburgerBtn) {
+          mobileMenu.classList.remove('open');
+          hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
+      };
+
+      if (hamburgerBtn && mobileCloseBtn) {
+        hamburgerBtn.addEventListener('click', openMenu);
+        mobileCloseBtn.addEventListener('click', closeMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+      }
+
+      // 3. Accessibility Key Listener
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('open')) {
+          closeMenu();
         }
       });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    // Active nav link highlighting
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-links a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(s => {
-        if (window.scrollY >= s.offsetTop - 80) current = s.id;
-      });
-      navLinks.forEach(a => {
-        a.style.color = a.getAttribute('href') === '#' + current ? 'var(--gold)' : '';
-      });
-    });
+      // 4. Intersection Observer for Fades & Header Nav Highlighting
+      const sectionOptions = {
+        root: null,
+        threshold: 0.1,
+        rootMargin: "-10% 0px -60% 0px"
+      };
 
-    // Form submit
-    function handleSubmit(e) {
-      e.preventDefault();
-      const fb = document.getElementById('form-feedback');
-      fb.style.display = 'block';
-      e.target.reset();
-      setTimeout(() => { fb.style.display = 'none'; }, 5000);
-    }
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.target.classList.contains('fade-in')) {
+            entry.target.classList.add('visible');
+          }
+          
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.style.color = 'var(--gold)';
+              } else {
+                link.style.color = '';
+              }
+            });
+          }
+        });
+      }, sectionOptions);
 
-    // Keyboard nav for mobile menu
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') document.getElementById('mobileMenu').classList.remove('open');
+      sections.forEach(section => sectionObserver.observe(section));
+
+      // 5. Form Pipeline Processing
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const feedback = document.getElementById('form-feedback');
+          if (feedback) {
+            feedback.style.display = 'block';
+            e.target.reset();
+            setTimeout(() => { feedback.style.display = 'none'; }, 5000);
+          }
+        });
+      }
     });
   </script>
 </body>
