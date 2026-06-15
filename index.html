@@ -130,25 +130,22 @@
       transition: all 0.2s;
     }
     @media (max-width: 768px) {
-      /* Show hamburger button */
+      /* Force the nav container to layout correctly */
+      nav {
+        padding: 0 24px !important;
+      }
+
+      /* Force the hamburger button to be visible */
       .nav-hamburger {
         display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 9999 !important;
       }
 
-      /* Hide desktop links and CTA */
+      /* Ensure the links are hidden so they don't break the layout */
       .nav-links, .nav-cta {
         display: none !important;
-      }
-
-      /* Adjust nav padding for mobile */
-      nav {
-        padding: 0 24px;
-      }
-    }
-    /* ADD THIS TEMPORARILY */
-    @media (max-width: 768px) {
-      nav {
-        background: red !important;
       }
     }
 
