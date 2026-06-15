@@ -833,11 +833,11 @@
 
     /* ── MOBILE NAV FIX ── */
     .mobile-menu {
-      display: none !important; /* Force hidden by default */
+      display: none; /* <--- THIS MUST BE HERE */
       position: fixed;
       inset: 0;
+      z-index: 9999;
       background: rgba(8,10,13,0.97);
-      z-index: 9999 !important; /* High z-index to sit on top */
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -864,13 +864,20 @@
       position: absolute;
       top: 20px; 
       right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
       background: none;
-      border: 1px solid var(--border-hi); /* Add a subtle border so the button is visible */
-      color: var(--silver);
-      font-size: 28px;
+      border: none; /* Removed the border as it’s for an X button */
       cursor: pointer;
-      padding: 12px 16px; /* Increased padding to make it a better tap target */
-      border-radius: 4px;
+      padding: 10px;
+    }
+
+    .mobile-close span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--white-dim);
     }
 
     /* ── ANIMATIONS ── */
@@ -934,7 +941,9 @@
 
   <!-- MOBILE MENU -->
   <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
-    <button class="mobile-close" id="mobileCloseBtn" aria-label="Close menu">✕</button>
+    <button class="mobile-close" id="mobileCloseBtn" aria-label="Close menu">
+        <span></span><span></span><span></span>
+    </button>
     <a href="#about" class="mobile-link">About</a>
     <a href="#skills" class="mobile-link">Skills</a>
     <a href="#experience" class="mobile-link">Experience</a>
@@ -1314,19 +1323,19 @@
     <div style="margin-top: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px;">
       <div class="contact-item">
         <div class="contact-item-label">LinkedIn</div>
-        <a href="https://linkedin.com/in/tehya-weber" class="contact-item-value" target="_blank" rel="noopener">linkedin.com/in/tehya-weber</a>
+        <a href="https://linkedin.com/in/tehya-weber" class="contact-item-value" target="_blank" rel="noopener">Tehya-Weber</a>
       </div>
       <div class="contact-item">
         <div class="contact-item-label">Email</div>
-        <a href="mailto:tehya@email.com" class="contact-item-value">[ Add Your Email ]</a>
+        <a href="mailto:tehya.work@protonmail.com" class="contact-item-value">Tehya.Work@protonmail.com</a>
       </div>
       <div class="contact-item">
         <div class="contact-item-label">GitHub</div>
-        <a href="https://github.com/" class="contact-item-value" target="_blank" rel="noopener">[ Add GitHub Handle ]</a>
+        <a href="https://github.com/TehyaW" class="contact-item-value" target="_blank" rel="noopener">TehyaW</a>
       </div>
       <div class="contact-item">
         <div class="contact-item-label">Location</div>
-        <div class="contact-item-value">Florida, USA · Remote OK</div>
+        <div class="contact-item-value">Florida, USA</div>
       </div>
     </div>
   </section>
