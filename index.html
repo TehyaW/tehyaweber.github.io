@@ -1363,18 +1363,21 @@
       const sections = document.querySelectorAll('section[id]');
       const navLinks = document.querySelectorAll('.nav-links a');
       const contactForm = document.querySelector('.contact-form');
+      const fadeElements = document.querySelectorAll('.fade-in');
 
       // 2. Refactored Menu Logic (Toggle State)
       const toggleMenu = () => {
         mobileMenu.classList.toggle('open');
-        // This line ensures the z-index resets when closed
-        if (!mobileMenu.classList.contains('open')) {
-            mobileMenu.style.zIndex = "-1";
-            // Add this inside your toggleMenu function
-            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : 'auto';
-        } else {
-            mobileMenu.style.zIndex = "9999";
-        }
+
+        document.body.style.overflow =
+          mobileMenu.classList.contains('open')
+            ? 'hidden'
+            : 'auto';
+
+        mobileMenu.style.zIndex =
+          mobileMenu.classList.contains('open')
+            ? '9999'
+            : '-1';
       };
 
       // Attach same toggle function to all triggers
@@ -1398,18 +1401,27 @@
 
       const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            if (entry.target.classList.contains('fade-in')) {
-              entry.target.classList.add('visible');
-            }
-            const id = entry.target.getAttribute('id');
+          if (!entry.isIntersecting) return;
+
+          if (entry.target.classList.contains('fade-in')) {
+            entry.target.classList.add('visible');
+          }
+
+          const id = entry.target.id;
+
+          if (id) {
             navLinks.forEach(link => {
-              link.style.color = (link.getAttribute('href') === `#${id}`) ? 'var(--gold)' : '';
+              link.style.color =
+                link.getAttribute('href') === `#${id}`
+                  ? 'var(--gold)'
+                  : '';
             });
           }
         });
       }, sectionOptions);
 
+      // ← MOVE THESE HERE
+      fadeElements.forEach(el => sectionObserver.observe(el));
       sections.forEach(section => sectionObserver.observe(section));
 
       // 5. Form Pipeline Processing
