@@ -129,6 +129,22 @@
       background: var(--white-dim);
       transition: all 0.2s;
     }
+    @media (max-width: 768px) {
+      /* Show hamburger button */
+      .nav-hamburger {
+        display: flex !important;
+      }
+
+      /* Hide desktop links and CTA */
+      .nav-links, .nav-cta {
+        display: none !important;
+      }
+
+      /* Adjust nav padding for mobile */
+      nav {
+        padding: 0 24px;
+      }
+    }
 
     /* ── HERO ── */
     #hero {
@@ -814,13 +830,13 @@
     .terminal-line .prompt { color: var(--silver); }
     .terminal-line .cmd { color: var(--white); }
 
-    /* ── MOBILE NAV ── */
+    /* ── MOBILE NAV FIX ── */
     .mobile-menu {
-      display: none;
+      display: none !important; /* Force hidden by default */
       position: fixed;
       inset: 0;
       background: rgba(8,10,13,0.97);
-      z-index: 9999; /* Bumped from 99 to 9999 to guarantee it sits on top */
+      z-index: 9999 !important; /* High z-index to sit on top */
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -829,7 +845,7 @@
     }
 
     .mobile-menu.open { 
-      display: flex !important; /* Force display flex when open */
+      display: flex !important; /* Force visible when JS adds the 'open' class */
     }
 
     .mobile-menu a {
