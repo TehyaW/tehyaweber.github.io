@@ -820,31 +820,40 @@
       position: fixed;
       inset: 0;
       background: rgba(8,10,13,0.97);
-      z-index: 99;
+      z-index: 9999; /* Bumped from 99 to 9999 to guarantee it sits on top */
       flex-direction: column;
       justify-content: center;
       align-items: center;
       gap: 32px;
       backdrop-filter: blur(8px);
     }
-    .mobile-menu.open { display: flex; }
+
+    .mobile-menu.open { 
+      display: flex !important; /* Force display flex when open */
+    }
+
     .mobile-menu a {
       font-family: var(--font-display);
       font-size: 36px;
       font-weight: 300;
       color: var(--white-dim);
       transition: color 0.2s;
+      text-decoration: none; /* Ensure no underlines */
     }
+
     .mobile-menu a:hover { color: var(--gold); }
+
     .mobile-close {
       position: absolute;
-      top: 20px; right: 20px;
+      top: 20px; 
+      right: 20px;
       background: none;
-      border: none;
+      border: 1px solid var(--border-hi); /* Add a subtle border so the button is visible */
       color: var(--silver);
       font-size: 28px;
       cursor: pointer;
-      padding: 8px;
+      padding: 12px 16px; /* Increased padding to make it a better tap target */
+      border-radius: 4px;
     }
 
     /* ── ANIMATIONS ── */
