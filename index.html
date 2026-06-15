@@ -158,6 +158,8 @@
     .hero-grid-bg {
       position: absolute;
       inset: 0;
+      z-index: -1; /* This pushes the grid behind everything */
+      pointer-events: none; /* This ensures your text remains selectable and not blocked */
       background-image:
         linear-gradient(rgba(30,34,48,0.4) 1px, transparent 1px),
         linear-gradient(90deg, rgba(30,34,48,0.4) 1px, transparent 1px);
