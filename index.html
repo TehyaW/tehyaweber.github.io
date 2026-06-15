@@ -27,6 +27,12 @@
       --font-body:    'Inter', sans-serif;
     }
 
+    /* Add this to your <style> block */
+    body {
+      padding-top: 64px; /* This pushes your content down so it starts below the fixed header */
+      margin: 0;         /* Ensures no unexpected gaps around your site */
+    }
+
     /* ── RESET ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -113,21 +119,32 @@
       background: var(--gold-glow);
       border-color: var(--gold);
     }
+    /* 1. Define the base hamburger look */
     .nav-hamburger {
-      display: none;
+      display: none; /* Hidden by default on desktop */
       flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
       background: none;
       border: none;
+      cursor: pointer;
+      padding: 0;
     }
+
     .nav-hamburger span {
       display: block;
-      width: 22px;
-      height: 1px;
+      width: 100%;
+      height: 2px;
       background: var(--white-dim);
-      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    /* 2. Show on mobile only */
+    @media (max-width: 768px) {
+      .nav-hamburger {
+        display: flex !important; /* Forces the 3 lines to show up */
+      }
     }
 
     /* ── HERO ── */
